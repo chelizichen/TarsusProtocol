@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strictPropertyInitialization": false,
+        "esModuleInterop":true,
+        "downlevelIteration":true,
+        "target": "es5",
+        "lib": ["es2022", "ESNext"]
+    },
+    "include": [
+      "category/*",
+      "stream/*",
+      "test/*",
+      "bin/*",
+      "communicate/*",
+      "gateway/*",
+      "integration/*"
+    ],
+    "exclude": ["node_modules"]
+}
