@@ -3,6 +3,7 @@ package org.lib.communicate.handler;
 import lombok.Getter;
 import lombok.Setter;
 import org.lib.category.*;
+import org.lib.communicate.base.T_Context;
 import org.lib.stream.T_RStream;
 import org.lib.stream.T_WStream;
 
@@ -65,7 +66,7 @@ public class T_ClientHandler implements Runnable {
         T_Base InvokeRequestBody = rs.ReadStruct(5, RequestStruct.Base, RequestStruct.Read);
         T_JceStruct ResponseStruct = T_RPC.METHODS.get(InvokeMethod.GetValue()).get(T_RPC.Handlers.Res);
         T_String InvokeResponse = new T_String(ResponseStruct._t_className);
-        T_RPC.T_Context Context = new T_RPC.T_Context(ByteLength, ModuleName, InvokeMethod, InvokeRequest, InvokeResponse, TraceId);
+        T_Context Context = new T_Context(ByteLength, ModuleName, InvokeMethod, InvokeRequest, InvokeResponse, TraceId);
         Method getModuleMethod = T_RPC.GetModuleMethod(ModuleName.GetValue(), InvokeMethod.GetValue(), RequestStruct.Base);
         T_Base invoke = (T_Base) getModuleMethod.invoke(T_RPC.GetModule(ModuleName.GetValue()), Context, InvokeRequestBody);
         T_WStream ws = ReadyToWrite(invoke, Context);
@@ -121,7 +122,7 @@ public class T_ClientHandler implements Runnable {
     }
 
 
-    public T_WStream ReadyToWrite(T_Base response, T_RPC.T_Context Context) throws Exception {
+    public T_WStream ReadyToWrite(T_Base response, T_Context Context) throws Exception {
         T_WStream ws = new T_WStream();
         ws.WriteString(0, Context.ModuleName.GetValue());
         ws.WriteString(1, Context.InvokeMethod.GetValue());

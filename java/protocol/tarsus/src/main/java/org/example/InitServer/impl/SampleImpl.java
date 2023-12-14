@@ -6,11 +6,11 @@ import org.example.InitServer.structs.User;
 import org.lib.category.T_INT32;
 import org.lib.category.T_INT8;
 import org.lib.category.T_String;
-import org.lib.communicate.handler.T_RPC;
+import org.lib.communicate.base.T_Context;
 
 public class SampleImpl extends Sample {
     @Override
-    public User getUserById(T_RPC.T_Context ctx, QueryId req) {
+    public User getUserById(T_Context ctx, QueryId req) {
         User user = new User();
         user.userId = new T_INT32(1);
         user.userAddress = new T_String("wuhan");
