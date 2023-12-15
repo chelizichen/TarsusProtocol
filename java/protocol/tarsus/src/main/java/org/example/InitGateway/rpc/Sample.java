@@ -1,10 +1,11 @@
-package org.example.InitServer.rpc;
+package org.example.InitGateway.rpc;
 
-import org.example.InitServer.structs.BasicInfo;
-import org.example.InitServer.structs.QueryId;
-import org.example.InitServer.structs.User;
+import org.example.InitGateway.structs.BasicInfo;
+import org.example.InitGateway.structs.QueryId;
+import org.example.InitGateway.structs.User;
 import org.lib.category.T_Container;
 import org.lib.category.T_JceStruct;
+import org.lib.communicate.T_Client;
 import org.lib.communicate.base.T_Context;
 import org.lib.communicate.handler.T_RPC;
 import org.lib.decorator.TarsusModule;
@@ -18,5 +19,14 @@ public abstract class Sample {
         T_RPC.SetMethod("getUserById", T_Container.JCE_STRUCT.get(QueryId._t_className), T_Container.JCE_STRUCT.get(User._t_className));
     }
 
-    public abstract User getUserById(T_Context ctx, QueryId req);
+    // Init
+    static {
+        try {
+            new Thread(new T_Client("127.0.0.1", 24511, "Sample", "60000")).start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public abstract User getUserById(T_Context ctx, QueryId req) throws Exception;
 }

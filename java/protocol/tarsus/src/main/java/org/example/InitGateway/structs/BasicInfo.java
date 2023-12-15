@@ -1,4 +1,4 @@
-package org.example.InitServer.structs;
+package org.example.InitGateway.structs;
 
 
 import org.lib.category.*;

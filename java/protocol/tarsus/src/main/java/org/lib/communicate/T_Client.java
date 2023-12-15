@@ -1,11 +1,11 @@
-package org.lib.communicate.base;
+package org.lib.communicate;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.jdeferred2.impl.DeferredObject;
 import org.lib.category.*;
-import org.lib.communicate.T_Client;
-import org.lib.communicate.handler.T_Proxy;
+import org.lib.communicate.base.T_InvokeBody;
 import org.lib.communicate.handler.T_RPC;
 import org.lib.stream.T_RStream;
 import org.lib.stream.T_WStream;
@@ -16,11 +16,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class T_ProxyHandler {
+public class T_Client implements Runnable {
     private String host;
     private Integer port;
     private String moduleName;
@@ -33,7 +34,9 @@ public class T_ProxyHandler {
     private ByteBuffer WholeBuffer;
     private T_Client tClient;
 
-    public T_ProxyHandler(String host, Integer port, String moduleName, String timeout) throws Exception {
+    public static HashMap<String, T_Client> Servants = new HashMap<>();
+
+    public T_Client(String host, Integer port, String moduleName, String timeout) throws Exception {
         this.host = host;
         this.port = port;
         this.moduleName = moduleName;
@@ -41,10 +44,12 @@ public class T_ProxyHandler {
         setSocket(new Socket(getHost(), getPort()));
         setBufferedReader(new BufferedReader(new InputStreamReader(getSocket().getInputStream())));
         setBufferedWriter(new BufferedWriter(new OutputStreamWriter(getSocket().getOutputStream())));
-        T_Proxy.Servants.put(getModuleName(), this);
+        T_Client.Servants.put(getModuleName(), this);
     }
 
-    public void BufferReaderToStream() throws Exception {
+    @SneakyThrows
+    @Override
+    public void run() {
         String streams = "";
         StringBuilder stringBuffer = new StringBuilder();
         while ((streams = getBufferedReader().readLine()) != null) {
@@ -89,7 +94,7 @@ public class T_ProxyHandler {
     }
 
     public <T extends T_Base> DeferredObject InvokeToServer(T_InvokeBody<T> body) throws Exception {
-        T_ProxyHandler tm = T_Proxy.Servants.get(body.moduleName);
+        T_Client tm = T_Client.Servants.get(body.moduleName);
         String traceId = UUID.randomUUID().toString();
         T_Vector<T_String> TraceIds = new T_Vector<>(T_String.class);
         TraceIds.push(traceId);
@@ -130,5 +135,6 @@ public class T_ProxyHandler {
         setWholeBuffer(null); // 标记不可达，gc
         setWholeLength(0);
     }
+
 
 }

@@ -2,29 +2,27 @@ package org.lib.events;
 
 
 import org.jdeferred2.Deferred;
+import org.jdeferred2.DoneCallback;
+import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 
-public class Promise {
-    public static void main(String[] args) {
-        DeferredObject deferred = new DeferredObject<>();
-        deferred.
-    }
+import java.util.HashMap;
 
-    private static void simulateAsyncOperation(Deferred<String, String, String> deferred, String result, boolean success) {
-        new Thread(() -> {
-            try {
-                // 模拟异步操作
-                Thread.sleep(2000);
-                // 异步操作成功，使用 resolve 方法
-                if (success) {
-                    deferred.resolve(result);
-                } else {
-                    // 异步操作失败，使用 reject 方法
-                    deferred.reject("Async operation failed");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+public class PromiseTest {
+    public static HashMap<String, DeferredObject> hs = new HashMap();
+
+    public static void main(String[] args) throws InterruptedException {
+        DeferredObject deferredObject = new DeferredObject<>();
+        Promise promise = deferredObject.promise();
+        promise.done(new DoneCallback() {
+            @Override
+            public void onDone(Object o) {
+                System.out.println(o);
             }
-        }).start();
+        });
+        hs.put("aaa", deferredObject);
+        Deferred aaa = hs.get("aaa").resolve("222");
+        System.out.println(aaa);
+        aaa.waitSafely();
     }
 }
