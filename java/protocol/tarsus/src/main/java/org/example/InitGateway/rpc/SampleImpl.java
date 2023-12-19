@@ -19,7 +19,7 @@ public class SampleImpl extends Sample {
     @Override
     public User getUserById(T_Context ctx, QueryId req) throws Exception {
         T_InvokeBody<T_Base> body = new T_InvokeBody<>();
-        body.invokeRequest = "Struct<QueryId>";
+        body.invokeRequest = "Sample.Struct<QueryId>";
         body.methodName = "getUserById";
         body.moduleName = "Sample";
         body.RequestBody = req;

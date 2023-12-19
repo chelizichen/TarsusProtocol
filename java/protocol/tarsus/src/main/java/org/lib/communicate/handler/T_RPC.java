@@ -8,7 +8,6 @@ import org.lib.communicate.base.T_Context;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 
 public class T_RPC {
     public static enum Handlers {
@@ -17,7 +16,7 @@ public class T_RPC {
     }
 
     public static HashMap<String, HashMap<Handlers, T_JceStruct>> METHODS = new HashMap<String, HashMap<Handlers, T_JceStruct>>();
-    public static HashMap<String, DeferredObject<T_Base,Object,Object>> INVOKES = new HashMap();
+    public static HashMap<String, DeferredObject<T_Base, Object, Object>> INVOKES = new HashMap();
 
     public static void SetMethod(String MethodName, T_JceStruct Req, T_JceStruct Res) {
         HashMap<Handlers, T_JceStruct> handler = new HashMap<>();

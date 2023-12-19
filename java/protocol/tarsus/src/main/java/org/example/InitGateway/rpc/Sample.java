@@ -17,10 +17,6 @@ public abstract class Sample {
         T_Container.JCE_STRUCT.put(User._t_className, new T_JceStruct(User.Read.class, User.Write.class, User.class, User._t_className));
         T_Container.JCE_STRUCT.put(BasicInfo._t_className, new T_JceStruct(BasicInfo.Read.class, BasicInfo.Write.class, BasicInfo.class, BasicInfo._t_className));
         T_RPC.SetMethod("getUserById", T_Container.JCE_STRUCT.get(QueryId._t_className), T_Container.JCE_STRUCT.get(User._t_className));
-    }
-
-    // Init
-    static {
         try {
             new Thread(new T_Client("127.0.0.1", 24511, "Sample", "60000")).start();
         } catch (Exception e) {

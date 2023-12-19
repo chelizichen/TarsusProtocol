@@ -133,9 +133,11 @@ public class T_WStream {
 
     public void WriteBuf(Integer tag, byte[] bytes, Integer ByteLength) throws Exception {
         if (tag.equals(-1)) {
+            this.allocate(ByteLength);
             for (Integer i = 0; i < ByteLength; i++) {
                 this.originBuf.put(this.position + i, bytes[i]);
             }
+            this.position += ByteLength;
         } else {
             this.addTag(tag);
             this.position += 4;
@@ -151,7 +153,11 @@ public class T_WStream {
             }
             this.position += bytes.length;
         }
+    }
 
+    public void WriteBuf(Integer tag, ByteBuffer bytes, Integer ByteLength) throws Exception {
+        byte[] array = bytes.array();
+        WriteBuf(tag, array, ByteLength);
     }
 
     public <T extends T_Base> void WriteStruct(Integer tag, T value, Class<T_WStream> TW) throws Exception {
