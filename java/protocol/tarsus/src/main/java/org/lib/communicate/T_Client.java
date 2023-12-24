@@ -93,6 +93,14 @@ public class T_Client implements Runnable {
         }
     }
 
+    public ByteBuffer WriteHead(ByteBuffer buffer) {
+        int ByteLength = buffer.array().length;
+        ByteBuffer allocate = ByteBuffer.allocate(buffer.array().length + 4);
+        allocate.putInt(ByteLength, 0);
+        allocate.put(buffer.array(), 4, ByteLength);
+        return null;
+    }
+
     public <T extends T_Base> DeferredObject InvokeToServer(T_InvokeBody<T> body) throws Exception {
         T_Client tm = T_Client.Servants.get(body.moduleName);
         String traceId = UUID.randomUUID().toString();
@@ -105,11 +113,8 @@ public class T_Client implements Runnable {
         ws.WriteString(2, body.invokeRequest);
         ws.WriteVector(3, TraceIds);
         ws.WriteStruct(4, body.RequestBody, jceStruct.Write);
-        T_WStream resp = new T_WStream();
-        resp.WriteInt32(0, ws.position);
-        resp.WriteBuf(-1, ws.originBuf.array(), ws.position);
-        tm.getBufferedWriter().write(resp.toBuf().asCharBuffer().array());
-        // add cb
+        ByteBuffer byteBuffer = WriteHead(ws.toBuf());
+        tm.getBufferedWriter().write(byteBuffer.asCharBuffer().array());
         DeferredObject<T_Base, Object, Object> deferredObject = new DeferredObject<>();
         T_RPC.INVOKES.put(traceId, deferredObject);
         return deferredObject;

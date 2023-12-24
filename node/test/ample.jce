@@ -45,6 +45,26 @@ struct getUserRes  {
     2   User    data;
 }
 
+struct latte    {
+    0   vector<latteUser> users;
+    1   int16   code;
+    2   string  message;
+}
+
+struct address {
+    0 string street;
+    1 string city;
+    2 string zip;
+}
+
+struct latteUser    {
+    0   int32   id;
+    1   string  name;
+    2   int8  age;
+    3   string  email;
+    4   address  address;
+}
+
 
 rpc getUserList(getUserListReq req, getUserListRes res);
 

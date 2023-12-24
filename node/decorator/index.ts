@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 (Symbol as { metadata: symbol }).metadata ??= Symbol("Symbol.metadata");
 
 export function Logger(log:string,ignoreResult:boolean){
@@ -37,7 +35,7 @@ export function DefineStruct(_t_className:string){
 
 export function DefineField(tag:number){
     return function(clazz:any,_context:ClassFieldDecoratorContext){
-        _.set(_context.metadata,`Tag.${tag}`,_context.name as string);
+        _context.metadata[`Tag.${tag}`] = _context.name
     }
 }
 
@@ -47,4 +45,8 @@ export function Module(moduleServer:any){
             
         })
     }
+}
+
+export function DebbugerWhen(test){
+    if(test) debugger;
 }

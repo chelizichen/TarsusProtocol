@@ -1,6 +1,6 @@
-import _ from "lodash";
 import { T_RStream, T_WStream } from "../stream";
 import { JceStruct, T_BASE, invokeMethod, invokeRequest, invokeResponse, module } from '../type/index'
+import { DebbugerWhen } from "../decorator";
 (Symbol as { metadata: symbol }).metadata ??= Symbol("Symbol.metadata");
 
 
@@ -43,7 +43,7 @@ class T_Vector<T = any>{
         for(const value of obj){
             if(T_Vector.isJceStruct){
                 const Write = T_Container.Get(T_Vector._t_value).Write;
-                // debugger;
+                DebbugerWhen(ws.position > 450)
                 ws.WriteStruct(tag,value,Write);
             }else{
                 ws.WriteAny(tag,value,T_Vector._t_value);
@@ -196,16 +196,16 @@ class T_Container {
 
 class T_Utils{
     static Read2Object(target,path){
-        return _.get(target,path) || {};
+        return target[path] || {}
     }
     static Read2Number(target,path){
-        return _.get(target,path) || 0;
+        return target[path] || 0;
     }
     static Read2String(target,path){
-        return _.get(target,path) || '';
+        return target[path] || '';
     }
     static Read2Vector(target,path){
-        return _.get(target,path) || [];
+        return target[path] || [];
     }
     static HideProperties(target){
         Object.defineProperty(target, 'client', {  

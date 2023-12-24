@@ -10,6 +10,7 @@
     - [接口](#接口)
   - [运行](#运行)
   - [内部原理](#内部原理)
+  - [性能优化](#性能优化)
 
 ## 概念
 
@@ -138,3 +139,21 @@ rpc getUser(QueryId req, getUserRes res);
 ## 内部原理
 
 大多数RPC的协议都采用 TLV 的格式
+
+## 性能优化
+
+1. 引入lodash时发现耗时太长
+  
+  在源码引入lodash的情况下，序列化的时间还不如json的零头
+  json: 0.345ms
+  tarswrite: 10.235ms
+  tarsread: 19.768ms
+
+  我决定去掉lodash，再跑一次
+  json: 0.372ms
+  tarswrite: 10.501ms
+  tarsread: 8.03ms
+
+  序列化的结果虽然仍然只是 lodash的零头
+  但是提升幅度接近60%;
+

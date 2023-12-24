@@ -4,9 +4,8 @@
 // <Tag<int8>,Length<Optional<int32>>,Value<any>> as TLV
 // This protocol uses TLV for decoding and encoding of underlying protocols
 
-import _ from "lodash";
 import { T_String,T_Vector,T_Map, T_INT8, T_INT16, T_INT32, T_INT64 } from "../category";
-import {Logger, WillOverride} from '../decorator/index'
+import {DebbugerWhen, Logger, WillOverride} from '../decorator/index'
 import { T_BASE } from '../type/index'
 
 (Symbol as { metadata: symbol }).metadata ??= Symbol("Symbol.metadata");
@@ -14,7 +13,7 @@ import { T_BASE } from '../type/index'
 
 class T_WStream {
     private originView :   DataView | undefined;
-    private position   :   number = 0;
+    public  position   :   number = 0;
     private originBuf  :   Buffer | undefined;
     private _capacity  :   number = 0;
     private positionMap = new Map<number,number>();
@@ -33,7 +32,7 @@ class T_WStream {
         this._capacity = Math.max(512, (this.position + byteLength) * 2);
         const tempBuf = this.createBuffer(this._capacity);
         if(this.originBuf != null){
-            this.originBuf.copy!(tempBuf,this.position);
+            this.originBuf.copy!(tempBuf,0,0,this.position);
             this.originBuf = undefined;
             this.originView = undefined;
         }
@@ -144,9 +143,9 @@ class T_WStream {
     WriteMap(tag:number, value:T_Map,T_Key?:T_BASE,T_Value?:T_BASE){
         const isTarsCategory = Reflect.has(value,"__getClass__") || (value instanceof T_Map);
         if(!isTarsCategory){
-            const tempVal = _.cloneDeep(value);
             const tempT_Map = new T_Map(T_Key,T_Value)
-            tempT_Map.pack(tempVal)
+            tempT_Map.pack(value);
+            value = null;
             value = tempT_Map;
         }
 
@@ -164,9 +163,9 @@ class T_WStream {
     WriteVector(tag:number,value:T_Vector,T_Value:any){
         const isTarsCategory = Reflect.has(value,"__getClass__") || (value instanceof T_Vector);
         if(!isTarsCategory){
-            const tempVal = _.cloneDeep(value);
             const tempT_Map = new T_Vector(T_Value)
-            tempT_Map.pack(tempVal)
+            tempT_Map.pack(value);
+            value = null;
             value = tempT_Map;
         }
         const ws = T_Vector.objToStream(value);
@@ -196,8 +195,9 @@ class T_RStream{
     private readStreamToObj:{ [key: string]: any } = new Object();
 
     public getMetaData(key){
-        const metadata = _.get(this,'__proto__.constructor')[Symbol.metadata]
-        return _.get(metadata,key);
+        return this['__proto__']['constructor'][Symbol.metadata][key]
+        // const metadata = _.get(this,'__proto__.constructor')[Symbol.metadata]
+        // return _.get(metadata,key);
     }
 
     public toObj(T_TYPE?:T_BASE){
